@@ -2,6 +2,16 @@
 # Allow other computers to connect to the Ubuntu computer in question
 # 
 
+# in the desktop to be connected to:
 Dash -> Desktop Sharing
+# change any settings
+
+# to find ip address for connection
+ifconfig
+
+#in osx, to connect to remote desktop:
+Finder -> Go -> Connect to Server
+vnc://<IP ADDRESS>
+
 
 
