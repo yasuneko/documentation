@@ -1,0 +1,20 @@
+#
+# mount a drive
+# https://help.ubuntu.com/community/AutomaticallyMountPartitions
+#
+
+# get drive info
+sudo fdisk -l
+
+# Determine device UUID
+sudo blkid
+
+# OR
+
+ls -al /dev/disk/by-uuid
+
+# edit /etc/fstab
+sudo vim /etc/fstab
+
+# add line for ntfs drive
+UUID=<DEVICE UUID> <MOUNT POINT> ntfs-3g defaults 0 0
