@@ -1,0 +1,29 @@
+#
+# Set up SSH on Ubuntu
+# followed guide: https://help.ubuntu.com/lts/serverguide/openssh-server.html
+#
+
+sudo apt-get install openssh-server
+
+# copy and write-protect config file in case of accidents
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.original
+sudo chmod a-w /etc/ssh/sshd_config.original
+
+# read manual
+man sshd_config
+
+# edit file
+sudo vim /etc/ssh/sshd_config
+
+# use port 2222
+Port 2222
+
+# Use public keys
+PubkeyAuthentication yes
+
+#restart server
+sudo systemctl restart sshd.service
+
+# ssh from another computer:
+ssh <REMOTE USER>@<IP ADDRESS> -p 2222
+
