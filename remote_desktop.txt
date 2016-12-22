@@ -1,0 +1,7 @@
+#
+# Allow other computers to connect to the Ubuntu computer in question
+# 
+
+Dash -> Desktop Sharing
+
+
