@@ -1,0 +1,111 @@
+#
+# install deluge server and webui
+# http://dev.deluge-torrent.org/wiki/UserGuide/Service/systemd
+#
+
+# add package repo update
+sudo add-apt-repository ppa:deluge-team/ppa
+sudo apt-get update
+
+# install deluge and webui
+sudo apt-get install deluged deluge-web
+
+# check installation
+which deluged
+which deluge-web
+
+# create usergroup deluge for security reasons
+sudo adduser --system --group --home /var/lib/deluge deluge
+
+# add user to usergroup
+sudo adduser <USERNAME> deluge
+
+# create/update systemd scripts
+sudo vim /etc/systemd/system/deluged.service
+
+# copy the following into the file:
+#
+ [Unit]
+ Description=Deluge Bittorrent Client Daemon
+ After=network-online.target
+
+ [Service]
+ Type=simple
+ User=deluge
+ Group=deluge
+ UMask=007
+
+ ExecStart=/usr/bin/deluged -d
+
+ Restart=on-failure
+
+ # Configures the time to wait before service is stopped forcefully.
+ TimeoutStopSec=300
+
+ [Install]
+ WantedBy=multi-user.target
+
+# run following command to start up on boot:
+systemctl enable /etc/systemd/system/deluged.service
+systemctl start deluged
+systemctl status deluged
+
+# create/update systemd scripts:
+sudo vim /etc/systemd/system/deluge-web.service
+
+# copy the following into the file:
+#
+ [Unit]
+ Description=Deluge Bittorrent Client Web Interface
+ After=network-online.target
+
+ [Service]
+ Type=simple
+
+ User=deluge
+ Group=deluge
+ UMask=027
+
+ ExecStart=/usr/bin/deluge-web
+
+ Restart=on-failure
+
+ [Install]
+ WantedBy=multi-user.target
+
+# run followint command to start up on boot:
+systemctl enable /etc/systemd/system/deluge-web.service
+systemctl start deluge-web
+systemctl status deluge-web
+
+# create and update following dir to allow for logging:
+sudo mkdir -p /var/log/deluge
+sudo chown -R deluge:deluge /var/log/deluge
+sudo chmod -R 750 /var/log/deluge
+
+# update previously craeted .service files with the following lines
+ExecStart=/usr/bin/deluged -d -l /var/log/deluge/daemon.log -L warning
+
+ExecStart=/usr/bin/deluge-web -l /var/log/deluge/web.log -L warning
+
+# create log rotation:
+sudo vim /etc/logrotate.d/deluge
+
+ /var/log/deluge/*.log {
+        rotate 4
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                systemctl restart deluged >/dev/null 2>&1 || true
+                systemctl restart deluge-web >/dev/null 2>&1 || true
+        endscript
+ }
+
+# access web client
+http://<SERVER IP>:8112
+# default password:
+deluge

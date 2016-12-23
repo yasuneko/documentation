@@ -1,0 +1,17 @@
+#
+# install plex
+# https://support.plex.tv/hc/en-us/articles/200288586-Installation 
+#
+
+# run following commands to add plex repo to ubuntu
+echo deb https://downloads.plex.tv/repo/deb/ public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list
+curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
+
+# update local package repo and install
+sudo apt-get update
+sudo apt-get install plexmediaserver
+
+# access plex server using browser
+http://127.0.0.1:32400/web
+# OR
+http://<SERVER IP>:32400/web
