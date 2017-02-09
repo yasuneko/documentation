@@ -1,0 +1,30 @@
+# intel graphics
+
+# install EFI Mounter V3
+# https://www.tonymacx86.com/resources/efi-mounter-v3.280/
+
+# Mount efi
+
+# Download Clover Configurator
+# http://mackie100projects.altervista.org/download-clover-configurator/
+
+# Make sure the following are checked:
+# 	Graphics -> Load VBios
+#	Graphics -> Inject Intel
+#	Boot -> npci=0x2000
+# 	Boot -> Verbose (to view commands)
+
+# Make sure following is not selected:
+# 	Install Drivers -> CsmVideoDxe
+
+# Move kexts:
+# 	Download From:
+		https://drive.google.com/drive/folders/0B9etu-h_COjXcUc5cWZES25jcWs
+#	Move to:
+		EFI -> CLOVER -> kexts -> 10.12
+# 		Make directory if you have to
+
+# Run Intel-9-HD-4600
+# 	only need to do with 9 series motherboards (H97/Z97)
+
+
