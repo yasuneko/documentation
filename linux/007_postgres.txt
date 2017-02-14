@@ -1,0 +1,45 @@
+# install postgres
+# https://help.ubuntu.com/community/PostgreSQL
+
+sudo apt-get install postgresql postgresql-contrib
+
+# set password for user "postgres"
+sudo -u postgres psql postgres
+\password <PASSWORD>
+
+# create database
+sudo -u postgres createdb mydb
+
+# move database location
+# https://www.digitalocean.com/community/tutorials/how-to-move-a-postgresql-data-directory-to-a-new-location-on-ubuntu-16-04
+
+# determine current database location
+sudo -u postgres psql
+SHOW data_directory;
+
+# quit postgres
+sudo systemctl stop postgresql
+sudo systemctl status postgresql
+
+# rsync database
+sudo rsync -av /var/lib/postgresql <NEW DIRECTORY>
+
+# hide original directory to avoid confusion
+sudo mv /var/lib/postgresql/9.5/main /var/lib/postgresql/9.5/main.bak
+
+# update .conf file
+sudo vim /etc/postgresql/9.5/main/postgresql.conf
+data_directory = '<NEW DIRECTORY>'
+
+# restart postgres
+sudo systemctl start postgresql
+sudo systemctl status postgresql
+
+# confirm new directory
+sudo -u postgres psql
+SHOW data_directory;
+
+# remove old directory
+sudo rm -Rf /var/lib/postgresql/9.5/main.bak
+
+

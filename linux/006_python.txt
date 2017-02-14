@@ -1,0 +1,5 @@
+# set up virtualenv
+# http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+sudo apt install virtualenv
+pip install virtualenv
