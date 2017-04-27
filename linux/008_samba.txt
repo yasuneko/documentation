@@ -1,0 +1,27 @@
+# instructions taken from following:
+# https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20%28Command-line%20interface/Linux%20Terminal%29%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!
+
+# install samba
+sudo apt-get install samba
+
+# create samba password
+sudo smbpasswd -a <USERNAME>
+
+# backup samba config file
+sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.backup
+
+# edit samba config file
+sudo vim /etc/samba/smb.conf
+
+# add the following
+[<folder_name>]
+path = /home/<user_name>/<folder_name>
+valid users = <user_name>
+read only = no
+
+# restart samba
+sudo service smbd restart
+
+# test samba settings file
+testparm
+
