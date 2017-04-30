@@ -1,0 +1,77 @@
+# instructions from:
+# https://arstechnica.com/gadgets/2016/04/the-ars-guide-to-building-a-linux-router-from-scratch/
+
+# determine interface names
+ifconfig
+
+# find interface with ip address already assigned
+
+# edit network configuration
+sudo vim /etc/network/interfaces
+
+# add the following
+# wan interface
+auto <IP_ADDRESS_INTERFACE_NAME>
+iface <IP_ADDRESS_INTERFACE_NAME> inet dhcp
+
+# add the following for each interface without ip address to be used:
+	# lan interface
+	auto <INTERFACE_NAME>
+	iface <INTERFACE_NAME> inet static
+		address 192.168.99.1
+		netmask 255.255.255.0
+
+# restart router
+
+# check to see ip address being assigned to interface
+ifconfig
+
+# open the following file
+sudo vim /etc/sysctl.conf
+
+# uncomment following line
+net.ipv4.ip_forward=1
+
+# apply changes
+sudo sysctl -p
+
+# edit following file:
+sudo nano /etc/network/if-pre-up.d/iptables
+
+# add the following text:
+	#!/bin/sh
+	/sbin/iptables-restore < /etc/network/iptables
+
+# run the following to change owners and permissions
+sudo chown root /etc/network/if-pre-up.d/iptables
+sudo chmod 755 /etc/network/if-pre-up.d/iptables
+
+
+# create/open following file
+sudo vim /etc/network/iptables
+
+# add the following to this file:
+	*nat
+	:PREROUTING ACCEPT [0:0]
+	:INPUT ACCEPT [0:0]
+	:OUTPUT ACCEPT [0:0]
+	:POSTROUTING ACCEPT [0:0]
+
+	-A POSTROUTING -o <WAN_INTERFACE_NAME> -j MASQUERADE
+
+	COMMIT
+
+	*filter
+	:INPUT ACCEPT [0:0]
+	:FORWARD ACCEPT [0:0]
+	:OUTPUT ACCEPT [0:0]
+
+	# Service rules
+	-A INPUT -j DROP
+
+	# Forwarding rules
+	-A FORWARD -j DROP
+
+	COMMIT
+
+
