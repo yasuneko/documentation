@@ -109,3 +109,9 @@ sudo vim /etc/logrotate.d/deluge
 http://<SERVER IP>:8112
 # default password:
 deluge
+
+# file permission issue after moving download file
+sudo chown -R deluge:deluge <FILEDIR>
+sudo chmod -R <FILEDIR>
+systemctl restart deluged
+
