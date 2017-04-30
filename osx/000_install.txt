@@ -1,0 +1,2 @@
+# install directions from:
+# https://www.tonymacx86.com/threads/unibeast-install-macos-sierra-on-any-supported-intel-based-pc.200564/
