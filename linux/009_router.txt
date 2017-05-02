@@ -47,6 +47,11 @@ sudo chown root /etc/network/if-pre-up.d/iptables
 sudo chmod 755 /etc/network/if-pre-up.d/iptables
 
 
+##
+# WARNING: the following will disconnect both ssh and the internet
+# 	you may want to install the dhcp server file first
+##
+
 # create/open following file
 sudo vim /etc/network/iptables
 
@@ -74,4 +79,104 @@ sudo vim /etc/network/iptables
 
 	COMMIT
 
+# run the following command to implement rules
+sudo /etc/network/if-pre-up.d/iptables
 
+# Set up DHCP and DNS
+# run the following command
+sudo apt-get install isc-dhcp-server
+
+# configure the .conf file
+# open following file
+sudo vim /etc/dhcp/dhcpd.conf
+
+# add the following:
+	subnet 192.168.99.0 netmask 255.255.255.0 {
+		range 192.168.99.100 192.168.99.199;
+		option routers 192.168.99.1;
+		option domain-name-servers 192.168.99.1;
+		option broadcast-address 192.168.99.255;
+	}
+
+# run the following command
+sudo apt-get install bind9
+
+# Allow DNS and DHCP client access
+# open following file for editing
+sudo vim /etc/network/iptables
+
+# Update Service rules section to look like the following:
+	# Service rules
+
+	# basic global accept rules - ICMP, loopback, traceroute, established all accepted
+	-A INPUT -s 127.0.0.0/8 -d 127.0.0.0/8 -i lo -j ACCEPT
+	-A INPUT -p icmp -j ACCEPT
+	-A INPUT -m state --state ESTABLISHED -j ACCEPT
+
+	# enable traceroute rejections to get sent out
+	-A INPUT -p udp -m udp --dport 33434:33523 -j REJECT --reject-with icmp-port-unreachable
+
+	# DNS - accept from LAN
+	-A INPUT -i <LAN_INTERFACE_NAME> -p tcp --dport 53 -j ACCEPT
+	-A INPUT -i <LAN_INTERFACE_NAME> -p udp --dport 53 -j ACCEPT
+
+	# SSH - accept from LAN
+	-A INPUT -i <LAN_INTERFACE_NAME> -p tcp --dport 22 -j ACCEPT
+
+	# DHCP client requests - accept from LAN
+	-A INPUT -i <LAN_INTERFACE_NAME> -p udp --dport 67:68 -j ACCEPT
+
+	# drop all other inbound traffic
+	-A INPUT -j DROP
+
+# Update Forwarding rules section to look like the following:
+	# Forwarding rules
+
+	# forward packets along established/related connections
+	-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+	# forward from LAN (p1p1) to WAN (p4p1)
+	-A FORWARD -i <LAN_INTERFACE_NAME> -o <WAN_INTERFACE_NAME> -j ACCEPT
+
+	# drop all other forwarded traffic
+	-A FORWARD -j DROP
+
+# Update *nat section to look like the following:
+	*nat
+	:PREROUTING ACCEPT [0:0]
+	:INPUT ACCEPT [0:0]
+	:OUTPUT ACCEPT [0:0]
+	:POSTROUTING ACCEPT [0:0]
+
+	-A POSTROUTING -o <WAN_INTERFACE_NAME> -j MASQUERADE
+
+	# NAT pinhole: HTTP from WAN to LAN
+	-A PREROUTING -p tcp -m tcp -i <WAN_INTERFACE_NAME> --dport 80 -j DNAT --to-destination 192.168.99.100:80
+
+	COMMIT
+
+# Update Forwarding rules section again to look like the following:
+	# Forwarding rules
+
+	# forward packets along established/related connections
+	-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+	# forward from LAN to WAN
+	-A FORWARD -i <LAN_INTERFACE_NAME> -o <WAN_INTERFACE_NAME> -j ACCEPT
+
+	# allow traffic from our NAT pinhole
+	-A FORWARD -p tcp -d 192.168.99.100 --dport 80 -j ACCEPT
+
+	# drop all other forwarded traffic
+	-A FORWARD -j DROP
+
+# run the following to set up router rules
+sudo /etc/network/if-pre-up.d/iptables
+
+# if router rules are not working, try restarting the router.
+# simple tests can be run using ping.
+# plug in a device to the LAN port. If device receives an IP address, DHCP is working correctly.
+# run the command
+ifconfig
+# on the router to determine LAN and WAN ip addresses. From the LAN connected device, try to ping the LAN and WAN ip addresses.
+# if that succeeds, attempt to ping outside server, such as www.google.com
