@@ -11,17 +11,27 @@ sudo vim /etc/network/interfaces
 
 # add the following
 # wan interface
-auto <IP_ADDRESS_INTERFACE_NAME>
-iface <IP_ADDRESS_INTERFACE_NAME> inet dhcp
+auto <WAN_INTERFACE_NAME>
+iface <WAN_INTERFACE_NAME> inet dhcp
 
 # add the following for each interface without ip address to be used:
 	# lan interface
-	auto <INTERFACE_NAME>
-	iface <INTERFACE_NAME> inet static
+	auto <LAN_INTERFACE_NAME>
+	iface <LAN_INTERFACE_NAME> inet static
 		address 192.168.99.1
 		netmask 255.255.255.0
 
+# NOTE: when adding more interfaces, each interface must have it's own ip network.
+# For example, if there are four interfaces, the ip address should be set as the following:
+#    192.168.0.1
+#    192.168.1.1
+#    192.168.2.1
+#    192.168.3.1
+
+# Also be aware of this when setting up the DHCP.
+
 # restart router
+sudo /etc/init.d/networking restart
 
 # check to see ip address being assigned to interface
 ifconfig
