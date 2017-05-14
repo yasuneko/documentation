@@ -1,6 +1,7 @@
 # instructions from:
 # https://arstechnica.com/gadgets/2016/04/the-ars-guide-to-building-a-linux-router-from-scratch/
 # https://askubuntu.com/questions/403802/configuring-a-network-on-a-multi-ethernet-port-server
+# https://killtacknine.com/building-an-ubuntu-16-04-router-part-1-network-interfaces/
 
 # determine interface names
 ifconfig
@@ -20,7 +21,9 @@ iface <WAN_INTERFACE_NAME> inet dhcp
 	auto <LAN_INTERFACE_NAME>
 	iface <LAN_INTERFACE_NAME> inet static
 		address 192.168.99.1
+		network 192.168.99.0
 		netmask 255.255.255.0
+		broadcast 192.168.99.255
 
 # NOTE: when adding more interfaces, each interface must have it's own ip network.
 # For example, if there are four interfaces, the ip address should be set as the following:
@@ -104,8 +107,9 @@ sudo vim /etc/dhcp/dhcpd.conf
 # add the following:
 	subnet 192.168.99.0 netmask 255.255.255.0 {
 		range 192.168.99.100 192.168.99.199;
-		option routers 192.168.99.1;
 		option domain-name-servers 192.168.99.1;
+		option subnet-mask 255.255.255.0;
+		option routers 192.168.99.1;
 		option broadcast-address 192.168.99.255;
 	}
 
@@ -116,73 +120,54 @@ sudo apt-get install bind9
 # open following file for editing
 sudo vim /etc/network/iptables
 
+# Update *nat section to look like the following:
+        *nat
+        :PREROUTING ACCEPT [0:0]
+        :INPUT ACCEPT [0:0]
+        :OUTPUT ACCEPT [0:0]
+        :POSTROUTING ACCEPT [0:0]
+
+        -A POSTROUTING -o <WAN_INTERFACE_NAME> -j MASQUERADE
+
+        COMMIT
+
+# run the following to set up router rules
+sudo /etc/network/if-pre-up.d/iptables
+
+# view iptables rules to make sure they have been correctly assigned
+sudo iptables -t nat -L -v
+
 # Update Service rules section to look like the following:
 	# Service rules
 
 	# basic global accept rules - ICMP, loopback, traceroute, established all accepted
-	-A INPUT -s 127.0.0.0/8 -d 127.0.0.0/8 -i lo -j ACCEPT
+	-A INPUT -i lo -j ACCEPT
 	-A INPUT -p icmp -j ACCEPT
 	-A INPUT -m state --state ESTABLISHED -j ACCEPT
 
-	# enable traceroute rejections to get sent out
-	-A INPUT -p udp -m udp --dport 33434:33523 -j REJECT --reject-with icmp-port-unreachable
+# Pinging to the router should now be enabled.
+# the router should now have access to the internet
 
-	# DNS - accept from LAN
-	-A INPUT -i <LAN_INTERFACE_NAME> -p tcp --dport 53 -j ACCEPT
-	-A INPUT -i <LAN_INTERFACE_NAME> -p udp --dport 53 -j ACCEPT
+# Update Services rules section to accept lan connections:
+	# Service rules
+	
+	# accept from lan
+	-A INPUT -i <LAN_INTERFACE> -j ACCEPT
+	
+# communication between the LAN interface and the router should be enabled. ssh should be possible between the LAN interface and the router
 
-	# SSH - accept from LAN
-	-A INPUT -i <LAN_INTERFACE_NAME> -p tcp --dport 22 -j ACCEPT
+# add the following forwarding rules
+	-A FORWARD -i <LAN_INTERFACE> -o <WAN_INTERFACE> -j ACCEPT
 
-	# DHCP client requests - accept from LAN
-	-A INPUT -i <LAN_INTERFACE_NAME> -p udp --dport 67:68 -j ACCEPT
-
-	# drop all other inbound traffic
-	-A INPUT -j DROP
-
-# Update Forwarding rules section to look like the following:
-	# Forwarding rules
-
-	# forward packets along established/related connections
-	-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-	# forward from LAN (p1p1) to WAN (p4p1)
-	-A FORWARD -i <LAN_INTERFACE_NAME> -o <WAN_INTERFACE_NAME> -j ACCEPT
-
-	# drop all other forwarded traffic
-	-A FORWARD -j DROP
-
-# Update *nat section to look like the following:
-	*nat
-	:PREROUTING ACCEPT [0:0]
-	:INPUT ACCEPT [0:0]
-	:OUTPUT ACCEPT [0:0]
-	:POSTROUTING ACCEPT [0:0]
-
-	-A POSTROUTING -o <WAN_INTERFACE_NAME> -j MASQUERADE
-
-	# NAT pinhole: HTTP from WAN to LAN
-	-A PREROUTING -p tcp -m tcp -i <WAN_INTERFACE_NAME> --dport 80 -j DNAT --to-destination 192.168.99.100:80
-
-	COMMIT
-
-# Update Forwarding rules section again to look like the following:
-	# Forwarding rules
-
-	# forward packets along established/related connections
-	-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-	# forward from LAN to WAN
-	-A FORWARD -i <LAN_INTERFACE_NAME> -o <WAN_INTERFACE_NAME> -j ACCEPT
-
-	# allow traffic from our NAT pinhole
-	-A FORWARD -p tcp -d 192.168.99.100 --dport 80 -j ACCEPT
-
-	# drop all other forwarded traffic
-	-A FORWARD -j DROP
-
+	-A FORWARD -m state --state ESTABLISHED -j ACCEPT
+	
 # run the following to set up router rules
 sudo /etc/network/if-pre-up.d/iptables
+
+# interfaces connected to the lan port should be able to connect to the internet
+
+# view iptables rules to make sure they have been correctly assigned
+sudo iptables -L -v
 
 # if router rules are not working, try restarting the router.
 # simple tests can be run using ping.
@@ -191,3 +176,6 @@ sudo /etc/network/if-pre-up.d/iptables
 ifconfig
 # on the router to determine LAN and WAN ip addresses. From the LAN connected device, try to ping the LAN and WAN ip addresses.
 # if that succeeds, attempt to ping outside server, such as www.google.com
+
+# debugging can also be done by looking at package counts with:
+sudo iptables -L -v
