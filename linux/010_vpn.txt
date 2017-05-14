@@ -1,0 +1,3 @@
+# install openvpn
+sudo apt-get install openvpn
+
