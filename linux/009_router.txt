@@ -179,3 +179,7 @@ ifconfig
 
 # debugging can also be done by looking at package counts with:
 sudo iptables -L -v
+
+##
+# Keep in mind these router rules are extremely basic. Almost all access to the LAN is accepted.
+##
