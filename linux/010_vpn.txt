@@ -1,3 +1,40 @@
 # install openvpn
 sudo apt-get install openvpn
 
+# openvpn settings file located at:
+/etc/default/openvpn
+
+# go to the following url and download the following files:
+https://www.mullvad.net/
+
+#files:
+mullvad.crt, mullvad.key, mullvad_linux.conf, ca.crt, crl.pem
+
+#place them in the following location:
+/etc/openvpn/
+
+# edit the following file
+/etc/default/openvpn
+
+# add the following line:
+AUTOSTART="mullvad_linux"
+
+# restart the router. Startup may take a few minutes.
+
+# add obfuscation
+# run the following:
+sudo apt-get install git libevent-dev libssl-dev dh-autoreconf
+
+# clone the following git directory in the location of your choice
+git clone https://git.torproject.org/debian/obfsproxy-legacy.git
+
+# cd into the git directory and run the following:
+sudo ./autogen.sh && ./configure && make
+sudo make install
+
+# launch obfsproxy
+obfsproxy obfs2 socks 127.0.0.1:10194
+
+# edit mullvad_linux.conf by adding:
+socks-proxy-retry
+socks-proxy 127.0.0.1 10194
