@@ -1,0 +1,16 @@
+# instructions found in the following url:
+# https://github.com/Sonarr/Sonarr/wiki/Installation
+
+# add sonarr repo
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FDA5DFFC
+sudo echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/sonarr.list
+
+# install/update sonarr
+sudo apt-get update
+sudo apt-get install nzbdrone
+
+# test run
+--debug /opt/NzbDrone/NzbDrone.exe
+
+# access sonarr
+http://localhost:8989
