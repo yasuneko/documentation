@@ -83,7 +83,7 @@ sudo mkdir -p /var/log/deluge
 sudo chown -R deluge:deluge /var/log/deluge
 sudo chmod -R 750 /var/log/deluge
 
-# update previously craeted .service files with the following lines
+# update previously created .service files with the following lines
 ExecStart=/usr/bin/deluged -d -l /var/log/deluge/daemon.log -L warning
 
 ExecStart=/usr/bin/deluge-web -l /var/log/deluge/web.log -L warning
