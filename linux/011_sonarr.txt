@@ -10,7 +10,7 @@ sudo apt-get update
 sudo apt-get install nzbdrone
 
 # test run
---debug /opt/NzbDrone/NzbDrone.exe
+mono --debug /opt/NzbDrone/NzbDrone.exe
 
 # access sonarr
 http://localhost:8989
