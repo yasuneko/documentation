@@ -1,0 +1,20 @@
+##
+# directions pulled from:
+# https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+##
+
+# store <RSA>.pub and <RSA> files in ~/.ssh/
+
+# start ss-agent
+> eval "$(ssh-agent -s)"
+
+# edit ~/.ssh/config file
+Host *github.com
+	AddKeysToAgent yes
+	ForwardAgent yes
+	IdentityFile ~/.ssh/<RSA>
+
+# run command to add private key to ssh-agent
+> ssh-add -K ~/.ssh/<RSA>
+
+# try cloning repository
