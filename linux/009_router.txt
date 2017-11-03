@@ -10,6 +10,11 @@ ifconfig
 
 # find interface with ip address already assigned
 
+# if any interfaces are missing, but show up with ifconfig -a, see if interface is deactivated using the command:
+sudo lshw -C network
+# and activate interface using
+sudo ip link set up <INTERFACE_NAME>
+
 # edit network configuration
 sudo vim /etc/network/interfaces
 
@@ -102,6 +107,13 @@ sudo /etc/network/if-pre-up.d/iptables
 # run the following command
 sudo apt-get install isc-dhcp-server
 
+# add interfaces to watch
+# open the following file
+sudo vim /etc/default/isc-dhcp-server
+
+#add interfaces
+INTERFACES="<INTERFACE_NAME> <INTERFACE_NAME>"
+
 # configure the .conf file
 # open following file
 sudo vim /etc/dhcp/dhcpd.conf
@@ -115,6 +127,7 @@ sudo vim /etc/dhcp/dhcpd.conf
 		option broadcast-address 192.168.99.255;
 	}
 
+# set up DNS
 # run the following command
 sudo apt-get install bind9
 
@@ -137,7 +150,7 @@ sudo vim /etc/network/iptables
 sudo /etc/network/if-pre-up.d/iptables
 
 # view iptables rules to make sure they have been correctly assigned
-sudo iptables -t nat -L -v
+sudo iptables -L -v
 
 # Update Service rules section to look like the following:
 	# Service rules
@@ -187,7 +200,32 @@ sudo iptables -L -v
 
 #logging can be found in the file /var/log/syslog
 
-
 ##
 # Keep in mind these router rules are extremely basic. Almost all access to the LAN is accepted.
 ##
+
+##
+# SET UP DNS
+##
+
+# open following file for editing
+vim /etc/bind/named.conf.options
+
+# uncomment "forwarders" section and add the following
+forwarders {
+        8.8.8.8;
+        8.8.4.4;
+}
+
+# restart DNS server
+sudo systemctl restart bind9
+
+# test with dig utility
+dig @127.0.0.1 google.com
+
+# open following file for editing
+vim /etc/dhcp/dhcpd.conf
+
+# update option domain-name-servers with:
+option domain-name-servers <ROUTER_IP>;
+
