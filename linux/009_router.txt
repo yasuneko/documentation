@@ -32,12 +32,22 @@ iface <WAN_INTERFACE_NAME> inet dhcp
 		netmask 255.255.255.0
 		broadcast 192.168.99.255
 
-# NOTE: when adding more interfaces, each interface must have it's own ip network.
+# NOTE: when adding more interfaces, each interface must have it's own subnetwork.
 # For example, if there are four interfaces, the ip address should be set as the following:
 #    192.168.0.1
 #    192.168.1.1
 #    192.168.2.1
 #    192.168.3.1
+# if multiple interfaces should be under one subnet, a net bridge must be created.
+# add the following to create the bridge interface:
+	# bridge interface
+	auto br0
+	iface br0 inet static
+        	address 192.168.99.1
+        	network 192.168.99.0
+        	netmask 255.255.255.0
+        	broadcast 192.168.99.255
+        	bridge_ports <LAN_INTERFACE_NAME_0> <LAN_INTERFACE_NAME_1>
 
 # Also be aware of this when setting up the DHCP.
 
@@ -112,6 +122,7 @@ sudo apt-get install isc-dhcp-server
 sudo vim /etc/default/isc-dhcp-server
 
 #add interfaces
+# if bridge was created, replace interface name with bridge
 INTERFACES="<INTERFACE_NAME> <INTERFACE_NAME>"
 
 # configure the .conf file
@@ -126,6 +137,9 @@ sudo vim /etc/dhcp/dhcpd.conf
 		option routers 192.168.99.1;
 		option broadcast-address 192.168.99.255;
 	}
+
+# run the following command to restart dhcp
+sudo service isc-dhcp-server restart
 
 # set up DNS
 # run the following command
@@ -183,6 +197,16 @@ sudo /etc/network/if-pre-up.d/iptables
 
 # view iptables rules to make sure they have been correctly assigned
 sudo iptables -L -v
+
+# if dhcp is not working, try adding dhcp logs
+# in the file /etc/dhcp/dhcpd.conf, uncomment the following line:
+log-facility local7;
+# in the file /etc/rsyslog.d/50-default.conf, add the following line:
+local7.* /var/log/dhcpd.log
+# restart rsyslog
+sudo service rsyslog restart
+# open file /var/log/dhcpd.log for log
+
 
 # if router rules are not working, try restarting the router.
 # simple tests can be run using ping.
