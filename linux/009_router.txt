@@ -4,6 +4,8 @@
 # https://killtacknine.com/building-an-ubuntu-16-04-router-part-1-network-interfaces/
 # https://www.karlrupp.net/en/computer/nat_tutorial
 # https://help.ubuntu.com/community/IptablesHowTo
+# https://help.ubuntu.com/community/NetworkConnectionBridge
+# https://www.cyberciti.biz/faq/debian-network-interfaces-bridge-eth0-eth1-eth2/
 
 # determine interface names
 ifconfig
