@@ -38,3 +38,6 @@ obfsproxy obfs2 socks 127.0.0.1:10194
 # edit mullvad_linux.conf by adding:
 socks-proxy-retry
 socks-proxy 127.0.0.1 10194
+
+# enable mullvad at startup
+systemctl enable --now openvpn@mullvad_se.service
