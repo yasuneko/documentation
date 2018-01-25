@@ -1,0 +1,10 @@
+#Install sshfs
+
+# create directory in /Volumes
+mkdir /Volumes/<VOLUME_NAME>
+
+# if .pem file is needed (such as aws) use the following command
+sshfs -o "IdentityFile=~/.ssh/<PEM_FILE>" <USERNAME>@<PUBLIC_DNS>:<DIR_TO_MOUNT> /Volumes/<DIR_TO_MOUNT_TO> -o volname=sand39_varwww,auto_cache,reconnect,defer_permissions,noappledouble
+
+# else:
+sshfs <PUBLIC_DNS>:<DIR_TO_MOUNT> /Volumes/<DIR_TO_MOUNT_TO> -o volname=sand39_varwww,auto_cache,reconnect,defer_permissions,noappledouble
