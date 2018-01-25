@@ -1,0 +1,32 @@
+#
+# New release upgrade
+#
+
+# run following command
+do-release-upgrade
+
+#read the following
+
+This session appears to be running under ssh. It is not recommended 
+to perform a upgrade over ssh currently because in case of failure it 
+is harder to recover. 
+
+If you continue, an additional ssh daemon will be started at port 
+'1022'. 
+
+To make recovery in case of failure easier, an additional sshd will 
+be started on port '1022'. If anything goes wrong with the running 
+ssh you can still connect to the additional one. 
+If you run a firewall, you may need to temporarily open this port. As 
+this is potentially dangerous it's not done automatically. You can 
+open the port with e.g.: 
+'iptables -I INPUT -p tcp --dport 1022 -j ACCEPT' 
+
+#####################################
+
+Third party sources disabled 
+
+Some third party entries in your sources.list were disabled. You can 
+re-enable them after the upgrade with the 'software-properties' tool 
+or your package manager. 
+
