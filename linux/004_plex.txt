@@ -1,6 +1,7 @@
 #
 # install plex
 # https://support.plex.tv/hc/en-us/articles/200288586-Installation 
+# https://441k.com/how-to-update-plex-media-server-on-ubuntu-be002870fdc5
 #
 
 # run following commands to add plex repo to ubuntu
@@ -15,3 +16,9 @@ sudo apt-get install plexmediaserver
 http://127.0.0.1:32400/web
 # OR
 http://<SERVER IP>:32400/web
+
+# to update plex
+# download .deb file
+
+# run following command:
+sudo dpkg -i plexmediaserver_0.9.12.4.1192–9a47d21_amd64.deb
