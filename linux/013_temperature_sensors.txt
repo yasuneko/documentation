@@ -1,0 +1,11 @@
+# information from the following page:
+# https://askubuntu.com/questions/15832/how-do-i-get-the-cpu-temperature
+
+# run the following command:
+sudo apt-get install lm-sensors
+
+# run the following command and follow the defaults:
+sudo sensors-detect
+
+# run command:
+sensors
