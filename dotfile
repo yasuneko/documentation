@@ -1,0 +1,233 @@
+###
+## SETTINGS
+###
+
+# change key repeat settings
+defaults write -g InitialKeyRepeat -int 35
+defaults write -g KeyRepeat -int 2
+
+# change scroll direction 
+defaults write -g com.apple.swipescrolldirection -bool false
+
+# turn off capslock
+# this seems wrong, and might be best to do in settings
+# https://apple.stackexchange.com/questions/13598/updating-modifier-key-mappings-through-defaults-command-tool
+defaults -currentHost write -g com.apple.keyboard.modifiermapping.1452-630-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771072</integer><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer></dict>'
+
+
+# install brew
+# https://brew.sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+###
+## APPS
+###
+
+
+## Apple App Store apps
+# monity
+# magnet
+# unsplash
+
+## Install Manually
+# Box
+
+# install karabiner-elements
+# how do we set up karabiner-elements from command line?
+brew cask install karabiner-elements
+
+# install python 3
+xcode-select --install
+brew install python
+
+
+# install pip3
+# https://pip.pypa.io/en/stable/installing/
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+
+# install virtualenv
+# https://virtualenv.pypa.io/en/latest/
+pip install virtualenv
+
+# install monity-helper
+# not sure if there are settings we can play with to add monity to notifications
+brew cask install monity-helper
+
+# install sublime text
+brew cask install sublime-text
+# add license
+
+# install visual studio code
+brew cask install visual-studio-code
+# Extensions
+## ms-vscode.cpptools
+## install remote development extension pack
+
+# install brave browser
+brew cask install brave-browser
+# brave extensions
+## honey
+## rikaikun
+## raindrop.io
+## momentum
+
+# install 1password
+# not sure if there are settings files we can play with here to add menu bar icon
+brew cask install 1password
+
+# install vlc
+brew cask install vlc
+# make vlc the default media player
+# https://forum.videolan.org/viewtopic.php?t=80411
+# turn off "skip frames"
+
+# install nordvpn
+brew cask install nordvpn
+
+# install spotify
+brew cask install spotify
+# set streaming quality to "very high"
+
+# install zoom
+brew cask install zoom 
+
+# install discord
+brew cask install discord
+
+# install slack
+brew cask install slack
+
+# install focus
+brew cask install focus
+# https://heyfocus.com/docs/features/advanced-url-blocking/
+# https://www.twitch.tv/(?!realmomjeans|snurtlefish|studywithme_lyync|willystudies)(\w*)
+# https://www.youtube.com/(?!watch\?v=7KSoWzbznhk|watch\?v=5qap5aO4i9A)(\w*)
+
+# install obs
+brew cask install obs
+
+brew install blackhole-2ch
+
+# install fliqlo
+brew install --cask fliqlo
+# set screensaver to fliqlo
+
+###
+## SETTINGS
+###
+
+
+### How do we set dock icons?
+
+### Can we set up multiple displays?
+
+### Brave Settings
+
+### UVA certificate
+
+### UVA VPN (Cisco anyconnect)
+
+### 24 hour date/time
+
+### "Shake mouse pointer to locate"
+# https://osxdaily.com/2015/10/08/disable-shake-to-find-cursor-mac-os-x/
+
+### block websites
+
+# edit /etc/hosts, add the following lines
+
+# BEGIN SELFCONTROL BLOCK
+0.0.0.0 camarchive.tv
+::      camarchive.tv
+0.0.0.0 cambro.tv
+::      cambro.tv
+0.0.0.0 camfap.tv
+::      camfap.tv
+0.0.0.0 camgirlbang.com
+::      camgirlbang.com
+0.0.0.0 camgirlfap.com
+::      camgirlfap.com
+0.0.0.0 camhub.cc
+::      camhub.cc
+0.0.0.0 camwhores.tv
+::      camwhores.tv
+0.0.0.0 camwhoria.com
+::      camwhoria.com
+0.0.0.0 chaturbate.com
+::      chaturbate.com
+0.0.0.0 chaturfier.com
+::      chaturfier.com
+0.0.0.0 damplips.com
+::      damplips.com
+0.0.0.0 erome.com
+::      erome.com
+0.0.0.0 freecammodels.com
+::      freecammodels.com
+0.0.0.0 pornhub.com
+::      pornhub.com
+0.0.0.0 recurbate.com
+::      recurbate.com
+0.0.0.0 redgifs.com
+::      redgifs.com
+0.0.0.0 redtube.com
+::      redtube.com
+0.0.0.0 sexcamsbay.com
+::      sexcamsbay.com
+0.0.0.0 spankbang.tv
+::      spankbang.tv
+0.0.0.0 xfantazy.com
+::      xfantazy.com
+0.0.0.0 xhamster.com
+::      xhamster.com
+0.0.0.0 xlxx.com
+::      xlxx.com
+0.0.0.0 xnxx.com
+::      xnxx.com
+0.0.0.0 www.camarchive.tv
+::      www.camarchive.tv
+0.0.0.0 www.cambro.tv
+::      www.cambro.tv
+0.0.0.0 www.camfap.tv
+::      www.camfap.tv
+0.0.0.0 www.camgirlbang.com
+::      www.camgirlbang.com
+0.0.0.0 www.camgirlfap.com
+::      www.camgirlfap.com
+0.0.0.0 www.camhub.cc
+::      www.camhub.cc
+0.0.0.0 www.camwhores.tv
+::      www.camwhores.tv
+0.0.0.0 www.camwhoria.com
+::      www.camwhoria.com
+0.0.0.0 www.chaturbate.com
+::      www.chaturbate.com
+0.0.0.0 www.chaturfier.com
+::      www.chaturfier.com
+0.0.0.0 www.damplips.com
+::      www.damplips.com
+0.0.0.0 www.erome.com
+::      www.erome.com
+0.0.0.0 www.freecammodels.com
+::      www.freecammodels.com
+0.0.0.0 www.pornhub.com
+::      www.pornhub.com
+0.0.0.0 www.recurbate.com
+::      www.recurbate.com
+0.0.0.0 www.redgifs.com
+::      www.redgifs.com
+0.0.0.0 www.redtube.com
+::      www.redtube.com
+0.0.0.0 www.sexcamsbay.com
+::      www.sexcamsbay.com
+0.0.0.0 www.spankbang.tv
+::      www.spankbang.tv
+0.0.0.0 www.xfantazy.com
+::      www.xfantazy.com
+0.0.0.0 www.xhamster.com
+::      www.xhamster.com
+0.0.0.0 www.xlxx.com
+::      www.xlxx.com
+0.0.0.0 www.xnxx.com
+::      www.xnxx.com
+# END SELFCONTROL BLOCK
