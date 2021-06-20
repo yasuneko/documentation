@@ -18,12 +18,22 @@ sudo vim /etc/ssh/sshd_config
 # use port 2222
 Port 2222
 
-# Use public keys
-PubkeyAuthentication yes
-
 #restart server
 sudo systemctl restart sshd.service
 
 # ssh from another computer:
 ssh <REMOTE USER>@<IP ADDRESS> -p 2222
+
+# Use public key authentication to log on
+# no passwords
+
+# add public key to server from client
+ssh-copy-id user@host
+
+# on server, edit file
+sudo vim /etc/ssh/sshd_config
+
+# Use public keys
+PasswordAuthentication no
+PubkeyAuthentication yes
 
